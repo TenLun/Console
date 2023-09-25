@@ -22,11 +22,15 @@ class Console():
         for widget in self.widgets:
             if widget[0] == "HrefLine":
                 for i in range(0,self.height):
-                    self.screen[i] = distract(self.screen[i],"|",widget[1][0])
-            if widget[0] == "Text":
-                self.screen[widget[2][1]] = distract(self.screen[widget[2][1]],widget[1],widget[2][0])
-        print('\r' +'\n'.join(self.screen),end='')
+                    self.screen[i] = distract(self.screen[i],"|",widget[2][0])
+            elif widget[0] == "Text":
+                try:
+                    self.screen[widget[2][1]] = distract(self.screen[widget[2][1]],widget[1][0],widget[2][0])
+                except:
+                    pass
+        os.system("cls")
         print('\033[{}A\033[{}D'.format(self.height,self.width), end='')#回到首行
+        print('\r' +'\n'.join(self.screen),end='')
     
     def GetWindowRect(self):
         left, top, right, bottom = win32gui.GetWindowRect(self.hwnd)
@@ -35,29 +39,30 @@ class Console():
     def SetGeometry(self,width,height,x,y):
         pass
 
-class Text():
+class Compos():
+    def pack(self,direction):
+        pass
+
+    def place(self,x,y=0):
+        self.x = x
+        self.y = y    
+        self.console.widgets[self.number].append([x,y])
+        self.console.blit()
+
+class Text(Compos):
     """文字"""
     def __init__(self,console,text):
         self.text = text
         self.console = console
         self.number = len(self.console.widgets)
         self.console.widgets.append(["Text",[text]])
-    def pack(self,x=0,y=0):
-        self.x = x
-        self.y = y    
-        self.console.widgets[self.number].append([x,y])
-        self.console.blit()
 
-class HrefLine():
+class HrefLine(Compos):
     """分割线"""
     def __init__(self,console):
         self.console = console
         self.number = len(self.console.widgets)
-        self.console.widgets.append(["HrefLine"])
-    def pack(self,x):
-        self.x = x
-        self.console.widgets[self.number].append([x])
-        self.console.blit()
+        self.console.widgets.append(["HrefLine",[]])
 
 def rgb(r=0,g=0,b=0,bgcolor=False):
     """返回真彩色ANSI控制符
