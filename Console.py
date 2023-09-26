@@ -20,12 +20,23 @@ class Console():
     def blit(self):
         #解析
         for widget in self.widgets:
+            name = widget[0]
+            content = widget[1]
+
+            #pack
+            if widget[2] == ["center"]:
+                x = int(self.width/2)
+                y = int(self.height/2)
+            else:
+                x,y = widget[2]
+
+            
             if widget[0] == "HrefLine":
                 for i in range(0,self.height):
-                    self.screen[i] = distract(self.screen[i],"|",widget[2][0])
+                    self.screen[i] = distract(self.screen[i],"|",x)
             elif widget[0] == "Text":
                 try:
-                    self.screen[widget[2][1]] = distract(self.screen[widget[2][1]],widget[1][0],widget[2][0])
+                    self.screen[y] = distract(self.screen[y],content[0],x)
                 except:
                     pass
         os.system("cls")
@@ -41,7 +52,9 @@ class Console():
 
 class Compos():
     def pack(self,direction):
-        pass
+        self.direction = direction
+        self.console.widgets[self.number].append([direction])
+        self.console.blit()
 
     def place(self,x,y=0):
         self.x = x
