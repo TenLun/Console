@@ -39,7 +39,7 @@ class Console():
                     self.screen[y] = distract(self.screen[y],content[0],x)
                 except:
                     pass
-        os.system("cls")
+        #os.system("cls")
         print('\033[{}A\033[{}D'.format(self.height,self.width), end='')#回到首行
         print('\r' +'\n'.join(self.screen),end='')
     
@@ -49,6 +49,19 @@ class Console():
 
     def SetGeometry(self,width,height,x,y):
         pass
+
+    def ScreenReset(self):
+        os.system('cls')
+        self.screen = []
+        for i in range(0,self.height):
+            self.screen.append(" "*self.width)
+    def EventLoop(self):
+        while 1:
+            if self.width != os.get_terminal_size().columns:
+                self.width = os.get_terminal_size().columns
+                Console.ScreenReset(self)
+            Console.blit(self)
+                
 
 class Compos():
     def pack(self,direction):
