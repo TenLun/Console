@@ -11,6 +11,7 @@ from Console import *
 window = Console()
 text = Text(window,"text")
 text.pack()
+window.EventLoop()
 ```
 以上是一小段示例
 
