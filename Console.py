@@ -22,7 +22,6 @@ class Console():
         for widget in self.widgets:
             name = widget[0]
             content = widget[1]
-
             #pack
             if widget[2] == ["center"]:
                 x = int(self.width/2)
@@ -51,7 +50,6 @@ class Console():
         pass
 
     def ScreenReset(self):
-        os.system('cls')
         self.screen = []
         for i in range(0,self.height):
             self.screen.append(" "*self.width)
@@ -60,19 +58,22 @@ class Console():
             if self.width != os.get_terminal_size().columns:
                 self.width = os.get_terminal_size().columns
                 Console.ScreenReset(self)
-            Console.blit(self)
-                
+                Console.blit(self)
+            if self.height != os.get_terminal_size().lines:
+                self.height = os.get_terminal_size().lines
+                Console.ScreenReset(self)
+                Console.blit(self)
 
 class Compos():
     def pack(self,direction):
         self.direction = direction
-        self.console.widgets[self.number].append([direction])
+        self.console.widgets[self.number][2] = [self.direction]
         self.console.blit()
 
     def place(self,x,y=0):
         self.x = x
         self.y = y    
-        self.console.widgets[self.number].append([x,y])
+        self.console.widgets[self.number][2] = [x,y]
         self.console.blit()
 
 class Text(Compos):
@@ -81,14 +82,15 @@ class Text(Compos):
         self.text = text
         self.console = console
         self.number = len(self.console.widgets)
-        self.console.widgets.append(["Text",[text]])
+        #name,options,position,direction
+        self.console.widgets.append(["Text",[text],[0,0]])
 
 class HrefLine(Compos):
     """分割线"""
     def __init__(self,console):
         self.console = console
         self.number = len(self.console.widgets)
-        self.console.widgets.append(["HrefLine",[]])
+        self.console.widgets.append(["HrefLine",[],[0,0]])
 
 def rgb(r=0,g=0,b=0,bgcolor=False):
     """返回真彩色ANSI控制符
