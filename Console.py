@@ -41,7 +41,7 @@ class Console():
         os.system("cls")
         for color in self.colors:
             self.screen[color[2]] = StrReplace(self.screen[color[2]],color[0],color[1])
-            self.screen[color[2]] = StrReplace(self.screen[color[2]],"/033[0m",color[1]+color[3])
+            self.screen[color[2]] = StrReplace(self.screen[color[2]],"\033[0m",color[1]+color[3]-self.width)
             
         print('\033[{}A\033[{}D'.format(self.height*2,self.width*2), end='')#回到首行
         print('\r' +'\n'.join(self.screen),end='')
