@@ -1,5 +1,5 @@
 import random,win32gui,os,time
-
+from Consoles.StrTools import *
 class Console():
     def __init__(self):
         #get hwnd
@@ -19,7 +19,9 @@ class Console():
         
     #打印屏幕
     def blit(self):
-        #解析
+        #解析(内存爆炸)
+
+        #组件
         for widget in self.widgets:
             name = widget[0]
             content = widget[1]
@@ -30,6 +32,7 @@ class Console():
             else:
                 x,y = widget[2]
 
+            #widgets
             if name == "HrefLine":
                 for i in range(0,self.height):
                     self.screen[i] = StrDistract(self.screen[i],"|",x)
@@ -38,12 +41,20 @@ class Console():
                     self.screen[y] = StrDistract(self.screen[y],content[0]["text"],x)
                 except:
                     pass
-        os.system("cls")
-        for color in self.colors:
-            self.screen[color[2]] = StrReplace(self.screen[color[2]],color[0],color[1])
-            self.screen[color[2]] = StrReplace(self.screen[color[2]],"\033[0m",color[1]+color[3]-self.width)
-            
-        print('\033[{}A\033[{}D'.format(self.height*2,self.width*2), end='')#回到首行
+            elif name == "Button":
+                pass
+
+        #颜色
+        for i in range(0,self.height+1):
+            rel_length = 0
+            for color in self.colors: #遍历颜色，找到属于此行的颜色
+                if color[2] == i: #添加颜色
+                    self.screen[i] = StrReplace(self.screen[i], color[0], color[1] + rel_length)
+                    self.screen[i] = StrReplace(self.screen[i], "\033[0m", color[1] + color[3] - self.width + rel_length)
+                    rel_length += 7 + len(color[0])
+        
+        #os.system("cls")#回到首行
+        print('\033[{}A\033[{}D'.format(self.height*2,self.width*2), end='')
         print('\r' +'\n'.join(self.screen),end='')
     
     def GetWindowRect(self):
@@ -82,7 +93,7 @@ class Compos():
 
 class Text(Compos):
     """文字"""
-    def __init__(self,console,text):
+    def __init__(self,console,text=""):
         self.text = text
         self.console = console
         self.number = len(self.console.widgets)
@@ -95,35 +106,14 @@ class HrefLine(Compos):
         self.number = len(self.console.widgets)
         self.console.widgets.append(["HrefLine",[{}],[0,0]])
 
-def StrDistract(fststr,secstr,start=0):
-    """字符串替换
-    fststr:要被插入的字符串
-    secstr:要插入的字符串
-    start:起始字符串位置
-    """
+class Button(Compos):
+    def __init__(self,console,text="",func=None):
+        self.text = text
+        self.console = console
+        self.number = len(self.console.widgets)
+        self.console.widgets.append(["Button",[{"text":text},{"function":func}],[0,0]])
+
+def configure(console,widget,config):
+    console.widgets[widget.number][str(config)] = config
     
-    fststr=list(fststr)
-    for i in range(0,len(secstr)):
-        fststr[start+i] = secstr[i]
-    return "".join(fststr)
-
-def StrReplace(fststr,secstr,start=0):
-    """字符串替换
-    fststr:要被插入的字符串
-    secstr:要插入的字符串
-    start:起始字符串位置
-    """
-    fststr = list(fststr)
-    fststr.insert(start,secstr)
-    return "".join(fststr)
-
-def rgb(r=0,g=0,b=0,bgcolor=False):
-    """返回真彩色ANSI控制符
-    r,g,b:色值
-    bgcolor:是否设置背景颜色
-    """
-    if bgcolor:
-        bgcolor=48
-    else:
-        bgcolor=38
-    return "\033[{};2;{};{};{}m".format(bgcolor,r,g,b)
+    
