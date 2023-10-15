@@ -24,7 +24,7 @@ class Console():
         #组件
         for widget in self.widgets:
             name = widget[0]
-            content = widget[1]
+            content = widget[1][0]
             #pack
             if widget[2] == ["center"]:
                 x = int(self.width/2)
@@ -37,17 +37,18 @@ class Console():
                 for i in range(0,self.height):
                     self.screen[i] = StrDistract(self.screen[i],"|",x)
             elif name == "Text":
-                try:
-                    self.screen[y] = StrDistract(self.screen[y],content[0]["text"],x)
-                except:
-                    pass
+                self.screen[y] = StrDistract(self.screen[y],content["text"],x)
             elif name == "Button":
                 pass
+            elif name == "Label":
+                for i in range(0,content["height"]+1):
+                    self.colors.append([content["fill"],x,y,content["width"]])
 
         #颜色
         for i in range(0,self.height+1):
             rel_length = 0
             for color in self.colors: #遍历颜色，找到属于此行的颜色
+                color = color[0]
                 if color[2] == i: #添加颜色
                     self.screen[i] = StrReplace(self.screen[i], color[0], color[1] + rel_length)
                     self.screen[i] = StrReplace(self.screen[i], "\033[0m", color[1] + color[3] - self.width + rel_length)
@@ -111,7 +112,14 @@ class Button(Compos):
         self.text = text
         self.console = console
         self.number = len(self.console.widgets)
-        self.console.widgets.append(["Button",[{"text":text},{"function":func}],[0,0]])
+        self.console.widgets.append(["Button",[{"text":text,"function":func}],[0,0]])
+
+class Label(Compos):
+    def __init__(self,console,fill="",width=0,height=0):
+        self.fill=fill
+        self.console = console
+        self.number = len(self.console.widgets)
+        self.console.widgets.append(["Label",[{"fill":fill,"width":0,"height":0}],[0,0]])
 
 def configure(console,widget,config):
     console.widgets[widget.number][str(config)] = config
