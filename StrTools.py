@@ -1,5 +1,3 @@
-#to Console
-
 def StrDistract(fststr,secstr,start=0):
     """字符串替换
     fststr:要被插入的字符串
@@ -32,3 +30,25 @@ def rgb(r=0,g=0,b=0,bgcolor=False):
     else:
         bgcolor=38
     return "\033[{};2;{};{};{}m".format(bgcolor,r,g,b)
+
+def NullList(list,content,length):
+    """将后者加入前者
+    """
+    for i in range(0, length):
+        list.append(content)
+    return list
+
+def MergeList(list, num, operation=0) -> str:
+    """取出列表元素合并列表
+    operation: 几次操作
+    """
+    outList = []
+    if operation:
+        for ele in list:
+            outList.append(ele[num])
+    else:
+        for listlines in list:
+            for ele in listlines:
+                outList.append(ele[num])
+    return "".join(outList)
+    
