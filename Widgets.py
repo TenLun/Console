@@ -25,7 +25,7 @@ class HrefLine(Compos):
     def __init__(self,console):
         self.console = console
         self.number = len(self.console.widgets)
-        self.console.widgets.append(["HrefLine",[{}],[0,0]])
+        self.console.widgets.append(["HrefLine",{},[0,0]])
 
 class Button(Compos):
     def __init__(self,console,text="",func=None):

@@ -31,24 +31,13 @@ def rgb(r=0,g=0,b=0,bgcolor=False):
         bgcolor=38
     return "\033[{};2;{};{};{}m".format(bgcolor,r,g,b)
 
-def NullList(list,content,length):
-    """将后者加入前者
-    """
-    for i in range(0, length):
-        list.append(content)
-    return list
 
-def MergeList(list, num, operation=0) -> str:
-    """取出列表元素合并列表
-    operation: 几次操作
-    """
+def MergeList(list) -> list:
     outList = []
-    if operation:
-        for ele in list:
-            outList.append(ele[num])
-    else:
-        for listlines in list:
-            for ele in listlines:
-                outList.append(ele[num])
-    return "".join(outList)
+    for firstElement in list:
+        queueList = []
+        for secondElement in firstElement:
+            queueList.append(secondElement[0])
+        outList.append("".join(queueList))
+    return outList
     
