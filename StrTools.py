@@ -1,3 +1,4 @@
+#对字符串的一些方法
 def StrDistract(fststr,secstr,start=0):
     """字符串替换
     fststr:要被插入的字符串
@@ -31,13 +32,12 @@ def rgb(r=0,g=0,b=0,bgcolor=False):
         bgcolor=38
     return "\033[{};2;{};{};{}m".format(bgcolor,r,g,b)
 
-
 def MergeList(list) -> list:
     outList = []
     for firstElement in list:
         queueList = []
         for secondElement in firstElement:
-            queueList.append(secondElement[0])
+            queueList.append("".join(secondElement))
         outList.append("".join(queueList))
     return outList
     

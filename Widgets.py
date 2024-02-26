@@ -12,14 +12,6 @@ class Compos():
         self.console.widgets[self.number][2] = [x,y]
         self.console.blit()
 
-class Text(Compos):
-    """文字"""
-    def __init__(self,console,text=""):
-        self.text = text
-        self.console = console
-        self.number = len(self.console.widgets)
-        self.console.widgets.append(["Text",{"text":text},[0,0]])
-
 class HrefLine(Compos):
     """分割线"""
     def __init__(self,console):
@@ -29,7 +21,7 @@ class HrefLine(Compos):
 
 class Button(Compos):
     def __init__(self,console,text="",func=None):
-        self.text = text
+        self.text,self.func = text,func
         self.console = console
         self.number = len(self.console.widgets)
         self.console.widgets.append(["Button",
@@ -37,12 +29,13 @@ class Button(Compos):
                                      [0,0]])
 
 class Label(Compos):
-    def __init__(self,console,fill="",width=0,height=0):
-        self.fill=fill
+    """文字"""
+    def __init__(self,console,fill="",width=0,height=0,text="hello"):
+        self.fill, self.width, self.height, self.text=  fill, width, height, text
         self.console = console
         self.number = len(self.console.widgets)
         self.console.widgets.append(["Label",
-                                     {"fill":fill,"width":width,"height":height},
+                                     {"fill":self.fill,"width":self.width,"height":self.height,"text":self.text},
                                      [0,0]])
 
 def configure(console,widget,config):

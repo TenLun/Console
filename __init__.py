@@ -16,11 +16,11 @@ class Console():
 
         
         self.widgets = [] #控件列表 [name,options,position]
-        self.colors = [] #颜色 [ansi,x,y,length]
+        self.colors = [] #颜色 二维列表 [ansi,x,y,length]
         self.screen = [] #最终输出的屏幕,三维列表
         # 1st dimension: each row
         # 2nd dimension: each glyphs
-        # 3rd dimension: the unicode(? of the glyph and its color [uni,color]
+        # 3rd dimension: the unicode(? of the glyph and its color [color, uni]
         self.ScreenReset()
         
 
@@ -38,22 +38,25 @@ class Console():
                 y = int(self.height/2)
             else:
                 x,y = position
-
             #widgets
             if name == "HrefLine":
-                for i in range(0,self.height):
-                    self.screen[i][x][0] ="|"
-            elif name == "Text":
-                self.screen[y][x][0] = options["text"]
+                for i in range(self.height):
+                    self.screen[i][x][1] ="|"
             elif name == "Button":
                 pass
             elif name == "Label":
-                for i in range(0,options["height"]):
+                for text in options["text"]:
+                    self.screen[y][x][1] = text
+                for i in range(options["height"]):
                     self.colors.append([options["fill"],x,y+i,options["width"]])
 
-        #颜色(重构ing)
+        #颜色
+        for color in self.colors:
+            name, x, y, length = color
+            for i in range(length):
+                self.screen[y][x+i][0] = name
         
-        
+        #返回首行
         print('\033[{}A\033[{}D'.format(self.height*2,self.width*2), end='')
 
         print('\r' +'\n'.join(MergeList(self.screen)),end='')
@@ -66,9 +69,12 @@ class Console():
         pass
 
     def ScreenReset(self):
-        self.screen = [[[" ", ""] for i in range(self.width)] for i in range(self.height)]
+        self.screen = [[["\033[0m", "\x20"] for i in range(self.width)] for i in range(self.height)]
         
     def EventLoop(self):
+        """事件循环"""
+        Console.ScreenReset(self)
+        Console.blit(self)
         #更新窗口大小
         while 1:
             if self.width != os.get_terminal_size().columns or self.height != os.get_terminal_size().lines:
