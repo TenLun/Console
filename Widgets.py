@@ -12,6 +12,9 @@ class Compos():
         self.console.widgets[self.number][2] = [x,y]
         self.console.blit()
 
+    def configure(self,console,widget,config,var):
+        self.console.widgets[widget.number][1][str(config)] = var
+
 class HrefLine(Compos):
     """分割线"""
     def __init__(self,console):
@@ -38,5 +41,4 @@ class Label(Compos):
                                      {"fill":self.fill,"width":self.width,"height":self.height,"text":self.text},
                                      [0,0]])
 
-def configure(console,widget,config):
-    console.widgets[widget.number][str(config)] = config
+

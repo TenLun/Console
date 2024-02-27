@@ -18,6 +18,7 @@ class Console():
         self.widgets = [] #控件列表 [name,options,position]
         self.colors = [] #颜色 二维列表 [ansi,x,y,length]
         self.screen = [] #最终输出的屏幕,三维列表
+        self.funcs = [] #每帧要执行的函数
         # 1st dimension: each row
         # 2nd dimension: each glyphs
         # 3rd dimension: the unicode(? of the glyph and its color [color, uni]
@@ -45,8 +46,10 @@ class Console():
             elif name == "Button":
                 pass
             elif name == "Label":
+                i = 0
                 for text in options["text"]:
-                    self.screen[y][x][1] = text
+                    self.screen[y][x+i][1] = text
+                    i += 1
                 for i in range(options["height"]):
                     self.colors.append([options["fill"],x,y+i,options["width"]])
 
@@ -84,5 +87,10 @@ class Console():
                 except:
                     pass
                 os.system("cls")#回到首行
-                Console.ScreenReset(self)
-                Console.blit(self)
+            for functions in self.funcs:
+                functions()
+            Console.ScreenReset(self)
+            Console.blit(self)
+    def AddFunc(self,function):
+        #if not function : return None
+        self.funcs.append(function)
